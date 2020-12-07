@@ -35,7 +35,6 @@ public class OrdersAdapter extends FirebaseRecyclerAdapter<Order, OrdersAdapter.
     @Override
     protected void onBindViewHolder(@NonNull OrderViewHolder holder, int position, @NonNull final Order model) {
         holder.tvItem.setText(model.getItemName());
-        holder.tvTableNo.setText(model.getTableNo());
         holder.tvQty.setText(String.valueOf(model.getItemQty()));
         holder.tvPrice.setText(String.format("%.2f", model.getTotal()));
 
@@ -74,13 +73,12 @@ public class OrdersAdapter extends FirebaseRecyclerAdapter<Order, OrdersAdapter.
 
     public class OrderViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView tvItem, tvTableNo, tvQty, tvPrice;
+        public TextView tvItem, tvQty, tvPrice;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
 
             tvItem = itemView.findViewById(R.id.item);
-            tvTableNo = itemView.findViewById(R.id.table);
             tvQty = itemView.findViewById(R.id.qty);
             tvPrice = itemView.findViewById(R.id.price);
         }

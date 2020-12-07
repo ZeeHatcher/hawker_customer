@@ -50,7 +50,6 @@ public class ItemsAdapter extends FirestoreRecyclerAdapter<Item, ItemsAdapter.It
     protected void onBindViewHolder(@NonNull ItemViewHolder holder, int position, @NonNull final Item model) {
         holder.name.setText(model.getName());
         holder.price.setText(String.format("RM%.2f", model.getPrice()));
-        holder.dailyStock.setText("Daily Stock: " + model.getDailyStock());
         holder.currentStock.setText("Current Stock: " + model.getCurrentStock());
 
         StorageReference storageReference = storage.getReference().child(model.getImagePath());
@@ -58,29 +57,26 @@ public class ItemsAdapter extends FirestoreRecyclerAdapter<Item, ItemsAdapter.It
                 .load(storageReference)
                 .into(holder.image);
 
-        holder.buttonEdit.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick edit: " + model.toString());
+                Log.d(TAG, "onClick:" + model.toString());
             }
         });
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView name, price, dailyStock, currentStock;
+        public TextView name, price, currentStock;
         public ImageView image;
-        public ImageButton buttonEdit;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
 
             name = itemView.findViewById(R.id.name);
             price = itemView.findViewById(R.id.price);
-            dailyStock = itemView.findViewById(R.id.daily_stock);
             currentStock = itemView.findViewById(R.id.current_stock);
             image = itemView.findViewById(R.id.image);
-            buttonEdit = itemView.findViewById(R.id.button_edit);
         }
     }
 }

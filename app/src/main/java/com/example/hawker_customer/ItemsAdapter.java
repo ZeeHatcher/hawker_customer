@@ -62,8 +62,6 @@ public class ItemsAdapter extends FirestoreRecyclerAdapter<Item, ItemsAdapter.It
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick edit: " + model.toString());
-
-                ((NavigationHost) context).navigateTo(FormFragment.newInstance(model), true);
             }
         });
     }

@@ -55,21 +55,6 @@ public class OrdersAdapter extends FirebaseRecyclerAdapter<Order, OrdersAdapter.
                 Log.d(TAG, "order click: " + model.toString());
 
                 new MaterialAlertDialogBuilder(context)
-                        .setTitle(R.string.dialog_completion_title)
-                        .setMessage(R.string.dialog_completion_message)
-                        .setPositiveButton(R.string.complete, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                handler.setOrderCompletion(model.getId(), 1);
-                            }
-                        })
-                        .setNegativeButton(R.string.reject, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                handler.setOrderCompletion(model.getId(), -1);
-                            }
-                        })
-                        .setNeutralButton(R.string.cancel, null)
                         .show();
 
                 return true;

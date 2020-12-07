@@ -1,5 +1,22 @@
 <resources>
-    <string name="app_name">hawker_customer</string>
+    <string name="app_name">Hawker</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="start">Start</string>
+    <string name="setup">Setup</string>
+    <string name="confirm">Confirm</string>
+    <string name="table_no">Table No</string>
+    <string name="select_store">Select Store</string>
+
+    <string name="message_login">You are not currently signed in to any store.</string>
+
+    <string name="hint_store">Which store are you eating at?</string>
+    <string name="orders">Orders</string>
+    <string name="menu">Menu</string>
+    <string name="logout">Logout</string>
+    <string name="item">Item</string>
+    <string name="qty">Qty</string>
+    <string name="price">Price</string>
+    <string name="label_total">Total:</string>
 </resources>

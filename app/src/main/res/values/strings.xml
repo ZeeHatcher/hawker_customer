@@ -21,4 +21,7 @@
     <string name="label_total">Total:</string>
     <string name="cancel">Cancel</string>
     <string name="logout_message">Are you sure you want to logout?</string>
+    <string name="error_table">Please enter your table number.</string>
+    <string name="error_place">Please select a store.</string>
+    <string name="loading">Loading...</string>
 </resources>

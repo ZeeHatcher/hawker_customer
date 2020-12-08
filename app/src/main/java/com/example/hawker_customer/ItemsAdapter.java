@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -49,6 +48,7 @@ public class ItemsAdapter extends FirestoreRecyclerAdapter<Item, ItemsAdapter.It
     @Override
     protected void onBindViewHolder(@NonNull ItemViewHolder holder, int position, @NonNull final Item model) {
         holder.name.setText(model.getName());
+        holder.hawkerName.setText(model.getHawkerName());
         holder.price.setText(String.format("RM%.2f", model.getPrice()));
         holder.currentStock.setText("Current Stock: " + model.getCurrentStock());
 
@@ -67,13 +67,14 @@ public class ItemsAdapter extends FirestoreRecyclerAdapter<Item, ItemsAdapter.It
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView name, price, currentStock;
+        public TextView name, hawkerName, price, currentStock;
         public ImageView image;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
 
             name = itemView.findViewById(R.id.name);
+            hawkerName = itemView.findViewById(R.id.hawker_name);
             price = itemView.findViewById(R.id.price);
             currentStock = itemView.findViewById(R.id.current_stock);
             image = itemView.findViewById(R.id.image);

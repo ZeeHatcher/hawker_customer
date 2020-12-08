@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,10 +27,13 @@ import com.google.firebase.auth.FirebaseUser;
  */
 public class MainFragment extends Fragment implements WidgetManager, MaterialToolbar.OnMenuItemClickListener, BottomNavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = "Main";
+    private BottomNavigationView bottomNavigationView;
+    private Customer customer;
+    private DatabaseHandler handler;
     private FirebaseAuth auth;
     private MaterialToolbar appBar;
     private ViewPager2 viewPager;
-    private BottomNavigationView bottomNavigationView;
 
     public MainFragment() {
         // Required empty public constructor
@@ -53,6 +57,7 @@ public class MainFragment extends Fragment implements WidgetManager, MaterialToo
         super.onCreate(savedInstanceState);
 
         auth = FirebaseAuth.getInstance();
+        handler = new DatabaseHandler(getContext());
     }
 
     @Override
@@ -79,14 +84,18 @@ public class MainFragment extends Fragment implements WidgetManager, MaterialToo
     public void onStart() {
         super.onStart();
 
-        bottomNavigationView.setSelectedItemId(R.id.page_orders);
-
         FirebaseUser currentUser = auth.getCurrentUser();
 
         if (currentUser == null) {
             // Go to login page if not authenticated
             ((NavigationHost) getContext()).navigateTo(LoginFragment.newInstance(), false);
         }
+
+        bottomNavigationView.setSelectedItemId(R.id.page_orders);
+
+        customer = handler.getCustomer(auth.getCurrentUser().getUid());
+
+        Log.d(TAG, customer.toString());
     }
 
     @Override
@@ -99,8 +108,7 @@ public class MainFragment extends Fragment implements WidgetManager, MaterialToo
                         .setPositiveButton(R.string.logout, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                auth.signOut();
-                                ((NavigationHost) getContext()).navigateTo(LoginFragment.newInstance(), false);
+                                signOut();
                             }
                         })
                         .setNegativeButton(R.string.cancel, null)
@@ -131,5 +139,11 @@ public class MainFragment extends Fragment implements WidgetManager, MaterialToo
 
     public void setAppBarTitle(CharSequence title) {
         appBar.setTitle(title);
+    }
+
+    private void signOut() {
+        handler.deleteCustomers();
+        auth.signOut();
+        ((NavigationHost) getContext()).navigateTo(LoginFragment.newInstance(), false);
     }
 }

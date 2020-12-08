@@ -18,16 +18,26 @@
         tools:src="@drawable/burger"/>
 
     <TextView
+        android:id="@+id/hawker_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/name"
+        app:layout_constraintLeft_toRightOf="@id/image"
+        tools:text="The John"/>
+
+    <TextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:layout_marginLeft="12dp"
         android:textSize="20sp"
         app:layout_constraintVertical_chainStyle="packed"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/hawker_name"
         app:layout_constraintBottom_toTopOf="@id/price"
-        app:layout_constraintLeft_toRightOf="@id/image"
+        app:layout_constraintLeft_toLeftOf="@id/hawker_name"
         tools:text="Laksa"/>
 
     <TextView

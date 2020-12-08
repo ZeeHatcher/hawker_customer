@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,10 +17,12 @@ import android.widget.Button;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.libraries.places.api.model.Place;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,7 +34,9 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "Setup";
     private static final int REQUEST_PLACES = 1;
 
+    private DatabaseHandler handler;
     private FirebaseAuth auth;
+    private Place place;
     private TextInputEditText etStore, etTable;
     private TextInputLayout tlStore, tlTable;
 
@@ -57,6 +62,7 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
 
         auth = FirebaseAuth.getInstance();
+        handler = new DatabaseHandler(getContext());
     }
 
     @Override
@@ -81,12 +87,24 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button_confirm:
-                validate();
+                if (!validate()) return;
 
                 auth.signInAnonymously()
                         .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                             @Override
                             public void onSuccess(AuthResult authResult) {
+                                FirebaseUser user = authResult.getUser();
+
+                                Customer customer = new Customer(
+                                        authResult.getUser().getUid(),
+                                        place.getId(),
+                                        etTable.getText().toString(),
+                                        place.getLatLng().latitude,
+                                        place.getLatLng().longitude
+                                );
+
+                                handler.setCustomer(customer);
+
                                 ((NavigationHost) getContext()).navigateTo(MainFragment.newInstance(), false);
                             }
                         })
@@ -112,11 +130,29 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_PLACES && resultCode == Activity.RESULT_OK) {
+            place = data.getExtras().getParcelable(PlacesActivity.KEY_PLACE);
 
+            Log.d(TAG, place.toString());
+            etStore.setText(place.getName());
         }
     }
 
-    private void validate() {
+    private boolean validate() {
+        boolean isValid = true;
 
+        tlStore.setError(null);
+        tlTable.setError(null);
+
+        if (etTable.getText().toString().isEmpty()) {
+            tlTable.setError(getString(R.string.error_table));
+            isValid = false;
+        }
+
+        if (place == null) {
+            tlStore.setError(getString(R.string.error_place));
+            isValid = false;
+        }
+
+        return isValid;
     }
 }

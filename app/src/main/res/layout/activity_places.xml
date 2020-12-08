@@ -29,4 +29,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:listitem="@layout/row_place"/>
 
+    <TextView
+        android:id="@+id/loading"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/loading"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="@id/recycler_view"
+        app:layout_constraintBottom_toBottomOf="@id/recycler_view"
+        app:layout_constraintLeft_toLeftOf="@id/recycler_view"
+        app:layout_constraintRight_toRightOf="@id/recycler_view"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

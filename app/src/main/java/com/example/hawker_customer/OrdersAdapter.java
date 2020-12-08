@@ -39,26 +39,41 @@ public class OrdersAdapter extends FirebaseRecyclerAdapter<Order, OrdersAdapter.
         holder.tvPrice.setText(String.format("%.2f", model.getTotal()));
 
         switch (model.getCompletion()) {
-            case 1:
+            case -1:
+                holder.tvItem.setTextColor(ContextCompat.getColor(context, R.color.colorTextPrimary));
+                holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        Log.d(TAG, "order click: " + model.toString());
+
+                        new MaterialAlertDialogBuilder(context)
+                                .setTitle(R.string.cancel_order)
+                                .setMessage(R.string.message_cancel_order)
+                                .setPositiveButton(R.string.cancel_it, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        handler.deleteOrder(model.getId());
+                                    }
+                                })
+                                .setNegativeButton(R.string.back, null)
+                                .show();
+
+                        return true;
+                    }
+                });
+
+                break;
+
+            case 0:
+                holder.itemView.setOnLongClickListener(null);
                 holder.tvItem.setTextColor(ContextCompat.getColor(context, R.color.colorPositive));
                 break;
 
-            case -1:
+            case 1:
+                holder.itemView.setOnLongClickListener(null);
                 holder.tvItem.setTextColor(ContextCompat.getColor(context, R.color.colorNegative));
                 break;
         }
-
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                Log.d(TAG, "order click: " + model.toString());
-
-                new MaterialAlertDialogBuilder(context)
-                        .show();
-
-                return true;
-            }
-        });
     }
 
     @NonNull

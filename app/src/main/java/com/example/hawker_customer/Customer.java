@@ -1,5 +1,7 @@
 package com.example.hawker_customer;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class Customer {
 
     private String uid, storeId, tableNo;

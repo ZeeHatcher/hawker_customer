@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-public class MainActivity extends AppCompatActivity implements NavigationHost {
+public class MainActivity extends AppCompatActivity implements NavigationHost, ItemsAdapter.OnItemClickListener {
 
     private static String TAG = "Main";
 
@@ -34,5 +34,11 @@ public class MainActivity extends AppCompatActivity implements NavigationHost {
     @Override
     public void pop() {
         getSupportFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void onItemClick(Item item, Customer customer) {
+        QuantityDialogFragment dialog = new QuantityDialogFragment(item, customer);
+        dialog.show(getSupportFragmentManager(), "quantity");
     }
 }

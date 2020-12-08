@@ -124,7 +124,7 @@ public class MenuFragment extends Fragment {
                                         })
                                         .build();
 
-                                adapter = new ItemsAdapter(options);
+                                adapter = new ItemsAdapter(options, getContext());
                                 recyclerView.setAdapter(adapter);
 
                                 adapter.startListening();

@@ -9,10 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -21,7 +24,12 @@ public class ItemsAdapter extends FirestoreRecyclerAdapter<Item, ItemsAdapter.It
     private static final String TAG = "ItemsAdapter";
 
     private Context context;
+    private Customer customer;
     private FirebaseStorage storage;
+
+    public interface OnItemClickListener {
+        void onItemClick(Item item, Customer customer);
+    }
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -29,17 +37,21 @@ public class ItemsAdapter extends FirestoreRecyclerAdapter<Item, ItemsAdapter.It
      *
      * @param options
      */
-    public ItemsAdapter(@NonNull FirestoreRecyclerOptions<Item> options) {
+    public ItemsAdapter(@NonNull FirestoreRecyclerOptions<Item> options, Context context) {
         super(options);
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        DatabaseHandler handler = new DatabaseHandler(context);
+        customer = handler.getCustomer(auth.getCurrentUser().getUid());
+
+        storage = FirebaseStorage.getInstance();
+        this.context = context;
     }
 
 
     @NonNull
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        storage = FirebaseStorage.getInstance();
-        context = parent.getContext();
-
         View view = LayoutInflater.from(context).inflate(R.layout.row_item, parent, false);
 
         return new ItemViewHolder(view);
@@ -57,12 +69,18 @@ public class ItemsAdapter extends FirestoreRecyclerAdapter<Item, ItemsAdapter.It
                 .load(storageReference)
                 .into(holder.image);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick:" + model.toString());
-            }
-        });
+        if (model.getCurrentStock() > 0) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d(TAG, "onClick:" + model.toString());
+
+                    ((OnItemClickListener) context).onItemClick(model, customer);
+                }
+            });
+        } else {
+            holder.currentStock.setTextColor(ContextCompat.getColor(context, R.color.colorNegative));
+        }
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {

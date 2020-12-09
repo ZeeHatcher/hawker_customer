@@ -1,7 +1,7 @@
 package com.example.hawker_customer;
 
 public class Order {
-    private String id, itemName;
+    private String id, hawkerId, itemId, itemName;
     private float total;
     private int itemQty, completion;
 
@@ -18,6 +18,22 @@ public class Order {
 
     public String getItemName() {
         return itemName;
+    }
+
+    public String getHawkerId() {
+        return hawkerId;
+    }
+
+    public void setHawkerId(String hawkerId) {
+        this.hawkerId = hawkerId;
+    }
+
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
     }
 
     public void setItemName(String itemName) {
@@ -48,14 +64,14 @@ public class Order {
         this.completion = completion;
     }
 
-    @Override
-    public String toString() {
-        return "Order{" +
-                "id='" + id + '\'' +
-                ", itemName='" + itemName + '\'' +
-                ", total=" + total +
-                ", itemQty=" + itemQty +
-                ", completion=" + completion +
-                '}';
+    public Order(String id, String hawkerId, String itemId, String itemName, float total, int itemQty, int completion) {
+        this.id = id;
+        this.hawkerId = hawkerId;
+        this.itemId = itemId;
+        this.itemName = itemName;
+        this.total = total;
+        this.itemQty = itemQty;
+        this.completion = completion;
     }
+
 }

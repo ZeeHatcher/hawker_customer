@@ -1,5 +1,7 @@
 package com.example.hawker_customer;
 
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
@@ -11,6 +13,7 @@ public class FirestoreHandler {
 
     private static final String COL_HAWKERS = "hawkers";
     private static final String COL_ITEMS = "items";
+    private static final String KEY_CURRENT_STOCK = "currentStock";
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -33,6 +36,14 @@ public class FirestoreHandler {
     public Query getHawkerItems(List<String> hawkerIds) {
         return db.collectionGroup(COL_ITEMS)
                 .whereIn("hawkerId", hawkerIds);
+    }
+
+    public Task<Void> incrementItemQuantity(String hawkerId, String itemId, int qty) {
+        return db.collection(COL_HAWKERS)
+                .document(hawkerId)
+                .collection(COL_ITEMS)
+                .document(itemId)
+                .update(KEY_CURRENT_STOCK, FieldValue.increment(qty));
     }
 
 }

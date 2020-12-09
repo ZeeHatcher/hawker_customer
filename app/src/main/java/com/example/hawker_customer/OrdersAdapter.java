@@ -19,7 +19,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 public class OrdersAdapter extends FirebaseRecyclerAdapter<Order, OrdersAdapter.OrderViewHolder> {
 
     private static final String TAG = "OrdersAdapter";
-    private FirebaseHandler handler;
+    private FirebaseHandler firebaseHandler;
+    private FirestoreHandler firestoreHandler;
     private Context context;
 
     /**
@@ -52,7 +53,8 @@ public class OrdersAdapter extends FirebaseRecyclerAdapter<Order, OrdersAdapter.
                                 .setPositiveButton(R.string.cancel_it, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        handler.deleteOrder(model.getId());
+                                        firebaseHandler.deleteOrder(model.getId());
+                                        firestoreHandler.incrementItemQuantity(model.getHawkerId(), model.getItemId(), model.getItemQty());
                                     }
                                 })
                                 .setNegativeButton(R.string.back, null)
@@ -79,7 +81,8 @@ public class OrdersAdapter extends FirebaseRecyclerAdapter<Order, OrdersAdapter.
     @NonNull
     @Override
     public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        handler = FirebaseHandler.getInstance();
+        firebaseHandler = FirebaseHandler.getInstance();
+        firestoreHandler = FirestoreHandler.getInstance();
         context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(R.layout.row_order, parent, false);
 

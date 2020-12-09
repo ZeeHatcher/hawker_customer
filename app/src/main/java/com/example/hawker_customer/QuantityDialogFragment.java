@@ -12,8 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +21,7 @@ public class QuantityDialogFragment extends DialogFragment {
 
     private Customer customer;
     private FirebaseHandler firebaseHandler = FirebaseHandler.getInstance();
+    private FirestoreHandler firestoreHandler = FirestoreHandler.getInstance();
     private Item item;
 
     public QuantityDialogFragment(Item item, Customer customer) {
@@ -40,6 +39,7 @@ public class QuantityDialogFragment extends DialogFragment {
         View view = layoutInflater.inflate(R.layout.dialog_quantity, null);
         final NumberPicker picker = view.findViewById(R.id.number_picker);
         picker.setMaxValue(item.getCurrentStock());
+        picker.setMinValue(1);
         picker.setWrapSelectorWheel(false);
 
         return builder.setView(view)
@@ -61,6 +61,7 @@ public class QuantityDialogFragment extends DialogFragment {
                         docData.put("completion", -1);
 
                         firebaseHandler.addOrder(docData);
+                        firestoreHandler.incrementItemQuantity(item.getHawkerId(), item.getId(), qty * -1);
                     }
                 })
                 .setNegativeButton(R.string.cancel, null)

@@ -16,6 +16,11 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class OrdersAdapter extends FirebaseRecyclerAdapter<Order, OrdersAdapter.OrderViewHolder> {
 
     private static final String TAG = "OrdersAdapter";
@@ -34,14 +39,27 @@ public class OrdersAdapter extends FirebaseRecyclerAdapter<Order, OrdersAdapter.
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull OrderViewHolder holder, int position, @NonNull final Order model) {
+    protected void onBindViewHolder(@NonNull final OrderViewHolder holder, int position, @NonNull final Order model) {
         holder.tvItem.setText(model.getItemName());
         holder.tvQty.setText(String.valueOf(model.getItemQty()));
         holder.tvPrice.setText(String.format("%.2f", model.getTotal()));
 
+        holder.itemView.setOnLongClickListener(null);
+        holder.tvEta.setText(null);
+
         switch (model.getCompletion()) {
             case -1:
-                holder.tvItem.setTextColor(ContextCompat.getColor(context, R.color.colorTextPrimary));
+                holder.tvItem.setTextColor(ContextCompat.getColor(context, R.color.colorTextSecondary));
+
+                final Calendar eta = Calendar.getInstance();
+                eta.setTimeInMillis(model.getEta());
+                holder.tvEta.setText(String.format(
+                        "%d:%02d %s",
+                        eta.get(Calendar.HOUR),
+                        eta.get(Calendar.MINUTE),
+                        eta.getDisplayName(Calendar.AM_PM, Calendar.SHORT, Locale.getDefault())
+                ));
+
                 holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {
@@ -67,12 +85,10 @@ public class OrdersAdapter extends FirebaseRecyclerAdapter<Order, OrdersAdapter.
                 break;
 
             case 0:
-                holder.itemView.setOnLongClickListener(null);
                 holder.tvItem.setTextColor(ContextCompat.getColor(context, R.color.colorPositive));
                 break;
 
             case 1:
-                holder.itemView.setOnLongClickListener(null);
                 holder.tvItem.setTextColor(ContextCompat.getColor(context, R.color.colorNegative));
                 break;
         }
@@ -91,12 +107,13 @@ public class OrdersAdapter extends FirebaseRecyclerAdapter<Order, OrdersAdapter.
 
     public class OrderViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView tvItem, tvQty, tvPrice;
+        public TextView tvItem, tvEta, tvQty, tvPrice;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
 
             tvItem = itemView.findViewById(R.id.item);
+            tvEta = itemView.findViewById(R.id.eta);
             tvQty = itemView.findViewById(R.id.qty);
             tvPrice = itemView.findViewById(R.id.price);
         }

@@ -3,7 +3,7 @@ package com.example.hawker_customer;
 public class Item {
 
     private String id, name, imagePath, hawkerId, hawkerName;
-    private float price;
+    private float price, prepTime;
     private int currentStock;
 
     public Item() {}
@@ -56,6 +56,14 @@ public class Item {
         this.price = price;
     }
 
+    public float getPrepTime() {
+        return prepTime;
+    }
+
+    public void setPrepTime(float prepTime) {
+        this.prepTime = prepTime;
+    }
+
     public int getCurrentStock() {
         return currentStock;
     }
@@ -71,10 +79,10 @@ public class Item {
                 ", name='" + name + '\'' +
                 ", imagePath='" + imagePath + '\'' +
                 ", hawkerId='" + hawkerId + '\'' +
-                ", storeName='" + hawkerName + '\'' +
+                ", hawkerName='" + hawkerName + '\'' +
                 ", price=" + price +
+                ", prepTime=" + prepTime +
                 ", currentStock=" + currentStock +
                 '}';
     }
-
 }

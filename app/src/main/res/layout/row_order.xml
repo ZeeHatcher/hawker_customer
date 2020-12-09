@@ -12,12 +12,24 @@
         android:id="@+id/item"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintWidth_percent="0.7"
+        app:layout_constraintWidth_percent="0.5"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/qty"
+        app:layout_constraintRight_toLeftOf="@id/eta"
         tools:text="Laksa"/>
+
+    <TextView
+        android:id="@+id/eta"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintWidth_percent="0.2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/item"
+        app:layout_constraintRight_toLeftOf="@id/qty"
+        tools:text="10:35 PM"/>
 
     <TextView
         android:id="@+id/qty"
@@ -27,7 +39,7 @@
         app:layout_constraintWidth_percent="0.1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/item"
+        app:layout_constraintLeft_toRightOf="@id/eta"
         app:layout_constraintRight_toLeftOf="@id/price"
         tools:text="3"/>
 

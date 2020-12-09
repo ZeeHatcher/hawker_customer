@@ -58,4 +58,13 @@
         app:layout_constraintLeft_toLeftOf="@id/price"
         tools:text="Current Stock: 17"/>
 
+    <TextView
+        android:id="@+id/wait_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/current_stock"
+        app:layout_constraintBottom_toBottomOf="@id/current_stock"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:text="Wait Time: 20 min(s)"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

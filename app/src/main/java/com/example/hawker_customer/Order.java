@@ -2,6 +2,7 @@ package com.example.hawker_customer;
 
 public class Order {
     private String id, hawkerId, itemId, itemName;
+    private long orderTime, eta;
     private float total;
     private int itemQty, completion;
 
@@ -14,10 +15,6 @@ public class Order {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getItemName() {
-        return itemName;
     }
 
     public String getHawkerId() {
@@ -36,8 +33,28 @@ public class Order {
         this.itemId = itemId;
     }
 
+    public String getItemName() {
+        return itemName;
+    }
+
     public void setItemName(String itemName) {
         this.itemName = itemName;
+    }
+
+    public long getOrderTime() {
+        return orderTime;
+    }
+
+    public void setOrderTime(long orderTime) {
+        this.orderTime = orderTime;
+    }
+
+    public long getEta() {
+        return eta;
+    }
+
+    public void setEta(long eta) {
+        this.eta = eta;
     }
 
     public float getTotal() {
@@ -61,16 +78,6 @@ public class Order {
     }
 
     public void setCompletion(int completion) {
-        this.completion = completion;
-    }
-
-    public Order(String id, String hawkerId, String itemId, String itemName, float total, int itemQty, int completion) {
-        this.id = id;
-        this.hawkerId = hawkerId;
-        this.itemId = itemId;
-        this.itemName = itemName;
-        this.total = total;
-        this.itemQty = itemQty;
         this.completion = completion;
     }
 

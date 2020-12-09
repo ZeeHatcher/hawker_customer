@@ -16,8 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.Calendar;
 
 public class ItemsAdapter extends FirestoreRecyclerAdapter<Item, ItemsAdapter.ItemViewHolder> {
 
@@ -26,6 +31,7 @@ public class ItemsAdapter extends FirestoreRecyclerAdapter<Item, ItemsAdapter.It
     private Context context;
     private Customer customer;
     private FirebaseStorage storage;
+    private FirebaseHandler handler;
 
     public interface OnItemClickListener {
         void onItemClick(Item item, Customer customer);
@@ -45,6 +51,7 @@ public class ItemsAdapter extends FirestoreRecyclerAdapter<Item, ItemsAdapter.It
         customer = handler.getCustomer(auth.getCurrentUser().getUid());
 
         storage = FirebaseStorage.getInstance();
+        this.handler = FirebaseHandler.getInstance();
         this.context = context;
     }
 
@@ -58,11 +65,36 @@ public class ItemsAdapter extends FirestoreRecyclerAdapter<Item, ItemsAdapter.It
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull ItemViewHolder holder, int position, @NonNull final Item model) {
+    protected void onBindViewHolder(@NonNull final ItemViewHolder holder, int position, @NonNull final Item model) {
         holder.name.setText(model.getName());
         holder.hawkerName.setText(model.getHawkerName());
         holder.price.setText(String.format("RM%.2f", model.getPrice()));
         holder.currentStock.setText("Current Stock: " + model.getCurrentStock());
+
+        if (holder.listener != null) handler.getHawkerOrders(model.getHawkerId()).removeEventListener(holder.listener);
+        holder.listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d(TAG, "onDataChange");
+
+                long now = Calendar.getInstance().getTimeInMillis();
+                long max = 0;
+                for (DataSnapshot s : snapshot.getChildren()) {
+                    if (s.child("completion").getValue(Integer.class) == -1) {
+                        max = Long.max(max, s.child("eta").getValue(Long.class));
+                    }
+                }
+
+                long diff = max - now;
+                holder.waitTime.setText(String.format("Wait Time: %.1f min(s)", (diff < 0) ? model.getPrepTime() : (diff / 60000) + model.getPrepTime() ));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        handler.getHawkerOrders(model.getHawkerId()).addValueEventListener(holder.listener);
 
         StorageReference storageReference = storage.getReference().child(model.getImagePath());
         GlideApp.with(context)
@@ -85,8 +117,9 @@ public class ItemsAdapter extends FirestoreRecyclerAdapter<Item, ItemsAdapter.It
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView name, hawkerName, price, currentStock;
+        public TextView name, hawkerName, price, currentStock, waitTime;
         public ImageView image;
+        public ValueEventListener listener;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -95,6 +128,7 @@ public class ItemsAdapter extends FirestoreRecyclerAdapter<Item, ItemsAdapter.It
             hawkerName = itemView.findViewById(R.id.hawker_name);
             price = itemView.findViewById(R.id.price);
             currentStock = itemView.findViewById(R.id.current_stock);
+            waitTime = itemView.findViewById(R.id.wait_time);
             image = itemView.findViewById(R.id.image);
         }
     }

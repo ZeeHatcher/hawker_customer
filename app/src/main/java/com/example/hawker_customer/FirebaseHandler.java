@@ -13,6 +13,7 @@ public class FirebaseHandler {
     private static final String KEY_ORDERS = "orders";
     private static final String KEY_CUSTOMER_ID = "customerId";
     private static final String KEY_COMPLETION = "completion";
+    private static final String KEY_HAWKER_ID = "hawkerId";
 
     public static FirebaseHandler getInstance() {
         return instance;
@@ -28,6 +29,13 @@ public class FirebaseHandler {
                 .child(KEY_ORDERS)
                 .orderByChild(KEY_CUSTOMER_ID)
                 .equalTo(uid);
+    }
+
+    public Query getHawkerOrders(String hawkerId) {
+        return db.getReference()
+                .child(KEY_ORDERS)
+                .orderByChild(KEY_HAWKER_ID)
+                .equalTo(hawkerId);
     }
 
     public void addOrder(Map<String, Object> data) {

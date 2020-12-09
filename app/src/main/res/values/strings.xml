@@ -30,4 +30,5 @@
     <string name="message_cancel_order">Do you want to cancel your order?</string>
     <string name="cancel_it">Cancel It</string>
     <string name="back">Back</string>
+    <string name="eta">ETA</string>
 </resources>

@@ -13,9 +13,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,9 +57,11 @@ public class QuantityDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.place_order, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        int qty = picker.getValue();
+                        final int qty = picker.getValue();
 
-                        Map<String, Object> docData = new HashMap<>();
+                        final long now = Calendar.getInstance().getTimeInMillis();
+
+                        final Map<String, Object> docData = new HashMap<>();
                         docData.put("customerId", customer.getUid());
                         docData.put("hawkerId", item.getHawkerId());
                         docData.put("itemId", item.getId());
@@ -63,9 +70,30 @@ public class QuantityDialogFragment extends DialogFragment {
                         docData.put("itemQty", qty);
                         docData.put("total", qty * item.getPrice());
                         docData.put("completion", -1);
+                        docData.put("orderTime", now);
 
-                        firebaseHandler.addOrder(docData);
-                        firestoreHandler.incrementItemQuantity(item.getHawkerId(), item.getId(), qty * -1);
+                        firebaseHandler.getHawkerOrders(item.getHawkerId())
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        long max = now;
+                                        for (DataSnapshot s : snapshot.getChildren()) {
+                                            if (s.child("completion").getValue(Integer.class) == -1) {
+                                                max = Long.max(max, s.child("eta").getValue(Long.class));
+                                            }
+                                        }
+
+                                        docData.put("eta", max + (item.getPrepTime() * 60000 * qty));
+
+                                        firebaseHandler.addOrder(docData);
+                                        firestoreHandler.incrementItemQuantity(item.getHawkerId(), item.getId(), qty * -1);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
                     }
                 })
                 .setNegativeButton(R.string.cancel, null)

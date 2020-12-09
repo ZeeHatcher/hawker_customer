@@ -21,10 +21,23 @@
             android:layout_height="wrap_content"
             android:text="@string/item"
             android:textStyle="bold"
-            app:layout_constraintWidth_percent="0.7"
+            app:layout_constraintWidth_percent="0.5"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/header_eta"/>
+
+        <TextView
+            android:id="@+id/header_eta"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/eta"
+            android:textStyle="bold"
+            android:gravity="center"
+            app:layout_constraintWidth_percent="0.2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/header_item"
             app:layout_constraintRight_toLeftOf="@id/header_qty"/>
 
         <TextView
@@ -37,7 +50,7 @@
             app:layout_constraintWidth_percent="0.1"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/header_item"
+            app:layout_constraintLeft_toRightOf="@id/header_eta"
             app:layout_constraintRight_toLeftOf="@id/header_price"/>
 
         <TextView

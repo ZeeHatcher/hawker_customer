@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.Query;
 
@@ -62,7 +63,12 @@ public class OrdersFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
 
-        Query query = handler.getOrders(auth.getCurrentUser().getUid());
+        FirebaseUser currentUser = auth.getCurrentUser();
+
+        if (currentUser == null) {
+            return null;
+        }
+        Query query = handler.getOrders(currentUser.getUid());
 
         FirebaseRecyclerOptions<Order> options = new FirebaseRecyclerOptions.Builder<Order>()
                 .setQuery(query, new SnapshotParser<Order>() {

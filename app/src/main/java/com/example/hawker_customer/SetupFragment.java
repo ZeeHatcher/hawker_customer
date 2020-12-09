@@ -132,7 +132,6 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
         if (requestCode == REQUEST_PLACES && resultCode == Activity.RESULT_OK) {
             place = data.getExtras().getParcelable(PlacesActivity.KEY_PLACE);
 
-            Log.d(TAG, place.toString());
             etStore.setText(place.getName());
         }
     }

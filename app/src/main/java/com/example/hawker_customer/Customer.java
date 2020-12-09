@@ -1,8 +1,11 @@
 package com.example.hawker_customer;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.auth.FirebaseAuth;
 
-public class Customer {
+public class Customer implements Parcelable {
 
     private String uid, storeId, tableNo;
     private double latitude, longitude;
@@ -17,6 +20,26 @@ public class Customer {
         this.latitude = latitude;
         this.longitude = longitude;
     }
+
+    protected Customer(Parcel in) {
+        uid = in.readString();
+        storeId = in.readString();
+        tableNo = in.readString();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
+    }
+
+    public static final Creator<Customer> CREATOR = new Creator<Customer>() {
+        @Override
+        public Customer createFromParcel(Parcel in) {
+            return new Customer(in);
+        }
+
+        @Override
+        public Customer[] newArray(int size) {
+            return new Customer[size];
+        }
+    };
 
     public String getUid() {
         return uid;
@@ -67,5 +90,19 @@ public class Customer {
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(uid);
+        parcel.writeString(storeId);
+        parcel.writeString(tableNo);
+        parcel.writeDouble(latitude);
+        parcel.writeDouble(longitude);
     }
 }

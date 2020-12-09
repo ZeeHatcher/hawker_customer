@@ -72,8 +72,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     cursor.getString(0),
                     cursor.getString(1),
                     cursor.getString(2),
-                    cursor.getLong(3),
-                    cursor.getLong(4)
+                    cursor.getDouble(3),
+                    cursor.getDouble(4)
             );
         }
 

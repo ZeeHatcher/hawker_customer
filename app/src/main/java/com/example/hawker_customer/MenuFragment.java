@@ -108,6 +108,8 @@ public class MenuFragment extends Fragment {
 
                             Log.d(TAG, "getHawkers:" + hawkerIds.toString());
 
+                            if (adapter != null) adapter.stopListening();
+
                             if (!hawkerIds.isEmpty()) {
                                 Query query = firestoreHandler.getHawkerItems(hawkerIds);
 
@@ -128,6 +130,8 @@ public class MenuFragment extends Fragment {
                                 recyclerView.setAdapter(adapter);
 
                                 adapter.startListening();
+                            } else {
+                                recyclerView.setAdapter(null);
                             }
                         }
                     }

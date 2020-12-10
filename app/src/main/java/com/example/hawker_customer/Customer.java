@@ -7,15 +7,16 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class Customer implements Parcelable {
 
-    private String uid, storeId, tableNo;
+    private String uid, storeId, storeName, tableNo;
     private double latitude, longitude;
 
     public Customer() {
     }
 
-    public Customer(String uid, String storeId, String tableNo, double latitude, double longitude) {
+    public Customer(String uid, String storeId, String storeName, String tableNo, double latitude, double longitude) {
         this.uid = uid;
         this.storeId = storeId;
+        this.storeName = storeName;
         this.tableNo = tableNo;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -24,6 +25,7 @@ public class Customer implements Parcelable {
     protected Customer(Parcel in) {
         uid = in.readString();
         storeId = in.readString();
+        storeName = in.readString();
         tableNo = in.readString();
         latitude = in.readDouble();
         longitude = in.readDouble();
@@ -57,6 +59,14 @@ public class Customer implements Parcelable {
         this.storeId = storeId;
     }
 
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
+
     public String getTableNo() {
         return tableNo;
     }
@@ -86,6 +96,7 @@ public class Customer implements Parcelable {
         return "Customer{" +
                 "uid='" + uid + '\'' +
                 ", storeId='" + storeId + '\'' +
+                ", storeName='" + storeName + '\'' +
                 ", tableNo='" + tableNo + '\'' +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
@@ -101,6 +112,7 @@ public class Customer implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(uid);
         parcel.writeString(storeId);
+        parcel.writeString(storeName);
         parcel.writeString(tableNo);
         parcel.writeDouble(latitude);
         parcel.writeDouble(longitude);

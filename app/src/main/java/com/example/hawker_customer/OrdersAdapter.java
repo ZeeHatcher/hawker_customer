@@ -45,7 +45,7 @@ public class OrdersAdapter extends FirebaseRecyclerAdapter<Order, OrdersAdapter.
         holder.tvPrice.setText(String.format("%.2f", model.getTotal()));
 
         holder.itemView.setOnLongClickListener(null);
-        holder.tvEta.setText(null);
+        holder.tvEta.setText("-");
 
         switch (model.getCompletion()) {
             case -1:

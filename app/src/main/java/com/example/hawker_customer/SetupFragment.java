@@ -98,6 +98,7 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
                                 Customer customer = new Customer(
                                         authResult.getUser().getUid(),
                                         place.getId(),
+                                        place.getName(),
                                         etTable.getText().toString(),
                                         place.getLatLng().latitude,
                                         place.getLatLng().longitude

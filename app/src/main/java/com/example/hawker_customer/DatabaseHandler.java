@@ -11,11 +11,12 @@ import androidx.annotation.Nullable;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "hawker_db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String TABLE_CUSTOMERS = "users";
     private static final String KEY_UID = "uid";
     private static final String KEY_STORE_ID = "store_id";
+    private static final String KEY_STORE_NAME = "store_name";
     private static final String KEY_TABLE_NO = "table_no";
     private static final String KEY_LAT = "lat";
     private static final String KEY_LONG = "long";
@@ -29,6 +30,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String sql = "CREATE TABLE " + TABLE_CUSTOMERS + "(" +
                 KEY_UID + " TEXT PRIMARY KEY," +
                 KEY_STORE_ID + " TEXT," +
+                KEY_STORE_NAME + " TEXT," +
                 KEY_TABLE_NO + " TEXT," +
                 KEY_LAT + " REAL," +
                 KEY_LONG + " REAL" +
@@ -53,6 +55,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_UID, customer.getUid());
         values.put(KEY_STORE_ID, customer.getStoreId());
+        values.put(KEY_STORE_NAME, customer.getStoreName());
         values.put(KEY_LAT, customer.getLatitude());
         values.put(KEY_LONG, customer.getLongitude());
         values.put(KEY_TABLE_NO, customer.getTableNo());
@@ -72,8 +75,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     cursor.getString(0),
                     cursor.getString(1),
                     cursor.getString(2),
-                    cursor.getDouble(3),
-                    cursor.getDouble(4)
+                    cursor.getString(3),
+                    cursor.getDouble(4),
+                    cursor.getDouble(5)
             );
         }
 

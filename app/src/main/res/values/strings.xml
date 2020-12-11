@@ -31,4 +31,6 @@
     <string name="cancel_it">Cancel It</string>
     <string name="back">Back</string>
     <string name="eta">ETA</string>
+    <string name="channel_name">Hawker Orders</string>
+    <string name="channel_description">Updates to the orders in the Hawker App</string>
 </resources>

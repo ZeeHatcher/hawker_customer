@@ -3,6 +3,9 @@ package com.example.hawker_customer;
 import android.Manifest;
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -46,15 +49,18 @@ public class MainFragment extends Fragment implements WidgetManager, MaterialToo
     private static final int REQUEST_PERMISSIONS = 1;
     private static final String TAG = "Main";
     private static final String KEY_CUSTOMER = "customer";
+    private static final int JOB_ID = 0;
 
     private BottomNavigationView bottomNavigationView;
     private Customer customer;
     private DatabaseHandler handler;
     private FirebaseAuth auth;
+    private JobScheduler jobScheduler;
     private Location storeLocation;
     private LocationManager locationManager;
     private MaterialToolbar appBar;
     private ViewPager2 viewPager;
+    private FirebaseUser currentUser;
     private LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
@@ -105,8 +111,20 @@ public class MainFragment extends Fragment implements WidgetManager, MaterialToo
             this.customer = getArguments().getParcelable(KEY_CUSTOMER);
         }
 
+        jobScheduler = (JobScheduler) getContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+
         auth = FirebaseAuth.getInstance();
         handler = new DatabaseHandler(getContext());
+
+
+        currentUser = auth.getCurrentUser();
+        if (currentUser == null) {
+            // Go to login page if not authenticated
+            signOut();
+            return;
+        }
+
+        scheduleJob();
     }
 
     @Override
@@ -133,16 +151,7 @@ public class MainFragment extends Fragment implements WidgetManager, MaterialToo
     public void onStart() {
         super.onStart();
 
-        FirebaseUser currentUser = auth.getCurrentUser();
-
-        if (currentUser == null) {
-            // Go to login page if not authenticated
-            signOut();
-            return;
-        }
-
         customer = handler.getCustomer(currentUser.getUid());
-        Log.d(TAG, customer.toString());
 
         if (customer == null) {
             signOut();
@@ -198,6 +207,7 @@ public class MainFragment extends Fragment implements WidgetManager, MaterialToo
     }
 
     private void signOut() {
+        jobScheduler.cancelAll();
         handler.deleteCustomers();
         auth.signOut();
         ((NavigationHost) getContext()).navigateTo(LoginFragment.newInstance(), false);
@@ -210,11 +220,21 @@ public class MainFragment extends Fragment implements WidgetManager, MaterialToo
 
         locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
 
-        long minTime = 1000 * 60 * 1; // 1 minute in milliseconds
+        long minTime = 0;
         float minDistance = 100f; // 100 meters
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, locationListener);
+    }
+
+    private void scheduleJob() {
+        ComponentName notificationJobService = new ComponentName(getContext().getPackageName(), NotificationJobService.class.getName());
+
+        JobInfo.Builder builder = new JobInfo.Builder(JOB_ID, notificationJobService);
+        JobInfo jobInfo = builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .build();
+
+        jobScheduler.schedule(jobInfo);
     }
 }

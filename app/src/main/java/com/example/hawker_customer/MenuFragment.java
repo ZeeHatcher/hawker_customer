@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.ui.firestore.SnapshotParser;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -86,6 +87,10 @@ public class MenuFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if (currentUser == null) {
+            return;
+        }
         customer = databaseHandler.getCustomer(auth.getCurrentUser().getUid());
 
         registration = firestoreHandler.getHawkers(customer.getStoreId())
